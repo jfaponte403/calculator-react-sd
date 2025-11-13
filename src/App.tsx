@@ -1,12 +1,20 @@
 import { useState } from 'react';
 
-function App() {
-  const [display, setDisplay] = useState('0');
-  const [prevValue, setPrevValue] = useState(null);
-  const [operation, setOperation] = useState(null);
-  const [newNumber, setNewNumber] = useState(true);
+type Operation = '+' | '-' | '×' | '÷';
 
-  const handleNumber = (num) => {
+type ButtonProps = {
+  value: string;
+  onClick: () => void;
+  className?: string;
+};
+
+function App() {
+  const [display, setDisplay] = useState<string>('0');
+  const [prevValue, setPrevValue] = useState<number | null>(null);
+  const [operation, setOperation] = useState<Operation | null>(null);
+  const [newNumber, setNewNumber] = useState<boolean>(true);
+
+  const handleNumber = (num: string) => {
     if (newNumber) {
       setDisplay(num);
       setNewNumber(false);
@@ -24,7 +32,22 @@ function App() {
     }
   };
 
-  const handleOperation = (op) => {
+  const calculate = (a: number, b: number, op: Operation): number => {
+    switch (op) {
+      case '+':
+        return a + b;
+      case '-':
+        return a - b;
+      case '×':
+        return a * b;
+      case '÷':
+        return a / b;
+      default:
+        return b;
+    }
+  };
+
+  const handleOperation = (op: Operation) => {
     const current = parseFloat(display);
 
     if (prevValue === null) {
@@ -37,16 +60,6 @@ function App() {
 
     setOperation(op);
     setNewNumber(true);
-  };
-
-  const calculate = (a, b, op) => {
-    switch (op) {
-      case '+': return a + b;
-      case '-': return a - b;
-      case '×': return a * b;
-      case '÷': return a / b;
-      default: return b;
-    }
   };
 
   const handleEquals = () => {
@@ -77,7 +90,7 @@ function App() {
     setNewNumber(true);
   };
 
-  const getOperationDisplay = () => {
+  const getOperationDisplay = (): string => {
     if (prevValue !== null && operation) {
       const currentNum = newNumber ? '' : ` ${display}`;
       return `${prevValue} ${operation}${currentNum}`;
@@ -85,7 +98,7 @@ function App() {
     return '';
   };
 
-  const Button = ({ value, onClick, className = '' }) => (
+  const Button = ({ value, onClick, className = '' }: ButtonProps) => (
     <button
       onClick={onClick}
       className={`aspect-square rounded-full text-3xl font-light active:opacity-50 transition-opacity ${className}`}
@@ -125,38 +138,90 @@ function App() {
           <Button
             value="÷"
             onClick={() => handleOperation('÷')}
-            className={`${operation === '÷' ? 'bg-white text-orange-500' : 'bg-orange-500 text-white'}`}
+            className={`${
+              operation === '÷'
+                ? 'bg-white text-orange-500'
+                : 'bg-orange-500 text-white'
+            }`}
           />
           <Button
             value="×"
             onClick={() => handleOperation('×')}
-            className={`${operation === '×' ? 'bg-white text-orange-500' : 'bg-orange-500 text-white'}`}
+            className={`${
+              operation === '×'
+                ? 'bg-white text-orange-500'
+                : 'bg-orange-500 text-white'
+            }`}
           />
 
           {/* Row 2 */}
-          <Button value="7" onClick={() => handleNumber('7')} className="bg-gray-700 text-white" />
-          <Button value="8" onClick={() => handleNumber('8')} className="bg-gray-700 text-white" />
-          <Button value="9" onClick={() => handleNumber('9')} className="bg-gray-700 text-white" />
+          <Button
+            value="7"
+            onClick={() => handleNumber('7')}
+            className="bg-gray-700 text-white"
+          />
+          <Button
+            value="8"
+            onClick={() => handleNumber('8')}
+            className="bg-gray-700 text-white"
+          />
+          <Button
+            value="9"
+            onClick={() => handleNumber('9')}
+            className="bg-gray-700 text-white"
+          />
           <Button
             value="-"
             onClick={() => handleOperation('-')}
-            className={`${operation === '-' ? 'bg-white text-orange-500' : 'bg-orange-500 text-white'}`}
+            className={`${
+              operation === '-'
+                ? 'bg-white text-orange-500'
+                : 'bg-orange-500 text-white'
+            }`}
           />
 
           {/* Row 3 */}
-          <Button value="4" onClick={() => handleNumber('4')} className="bg-gray-700 text-white" />
-          <Button value="5" onClick={() => handleNumber('5')} className="bg-gray-700 text-white" />
-          <Button value="6" onClick={() => handleNumber('6')} className="bg-gray-700 text-white" />
+          <Button
+            value="4"
+            onClick={() => handleNumber('4')}
+            className="bg-gray-700 text-white"
+          />
+          <Button
+            value="5"
+            onClick={() => handleNumber('5')}
+            className="bg-gray-700 text-white"
+          />
+          <Button
+            value="6"
+            onClick={() => handleNumber('6')}
+            className="bg-gray-700 text-white"
+          />
           <Button
             value="+"
             onClick={() => handleOperation('+')}
-            className={`${operation === '+' ? 'bg-white text-orange-500' : 'bg-orange-500 text-white'}`}
+            className={`${
+              operation === '+'
+                ? 'bg-white text-orange-500'
+                : 'bg-orange-500 text-white'
+            }`}
           />
 
           {/* Row 4 */}
-          <Button value="1" onClick={() => handleNumber('1')} className="bg-gray-700 text-white" />
-          <Button value="2" onClick={() => handleNumber('2')} className="bg-gray-700 text-white" />
-          <Button value="3" onClick={() => handleNumber('3')} className="bg-gray-700 text-white" />
+          <Button
+            value="1"
+            onClick={() => handleNumber('1')}
+            className="bg-gray-700 text-white"
+          />
+          <Button
+            value="2"
+            onClick={() => handleNumber('2')}
+            className="bg-gray-700 text-white"
+          />
+          <Button
+            value="3"
+            onClick={() => handleNumber('3')}
+            className="bg-gray-700 text-white"
+          />
           <Button
             value="="
             onClick={handleEquals}
@@ -171,7 +236,11 @@ function App() {
           >
             0
           </button>
-          <Button value="." onClick={handleDecimal} className="bg-gray-700 text-white" />
+          <Button
+            value="."
+            onClick={handleDecimal}
+            className="bg-gray-700 text-white"
+          />
         </div>
       </div>
     </div>

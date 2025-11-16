@@ -1,5 +1,5 @@
-import {useAppHook} from './hooks/UseAppHook';
-import {SupportedOperations} from './Models/SupportedOperations';
+import { useAppHook } from './hooks/UseAppHook';
+import { SupportedOperations } from './Models/SupportedOperations';
 
 type ButtonProps = {
   value: string;
@@ -21,7 +21,7 @@ function App() {
     handleEquals,
   } = useAppHook();
 
-  const Button = ({value, onClick, className = ''}: ButtonProps) => (
+  const Button = ({ value, onClick, className = '' }: ButtonProps) => (
     <button
       onClick={onClick}
       className={`aspect-square rounded-full text-3xl font-light active:opacity-50 transition-opacity ${className}`}
@@ -47,7 +47,7 @@ function App() {
   };
 
   const completedExpression =
-    resultFetched.operation != null
+    resultFetched && resultFetched.operation != null
       ? `${resultFetched.num1} ${getOperationSymbol(
         resultFetched.operation
       )} ${resultFetched.num2} =`
@@ -180,7 +180,7 @@ function App() {
           <button
             onClick={() => handleNumber('0')}
             className="col-span-2 rounded-full text-3xl font-light active:opacity-50 transition-opacity bg-gray-700 text-white text-left pl-8"
-            style={{aspectRatio: '2/1'}}
+            style={{ aspectRatio: '2/1' }}
           >
             0
           </button>

@@ -1,13 +1,11 @@
-import {useState} from 'react';
-import {SupportedOperations} from '../Models/SupportedOperations';
-import type {IFetchResponse} from '../Models/FetchedResults';
-import {defaultFetchedValues} from '../Models/FetchedResults';
-import {SupportedStates} from '../enums/SupportedStates';
+import { useState } from 'react';
+import { SupportedOperations } from '../Models/SupportedOperations';
+import type { IFetchResponse } from '../Models/FetchedResults';
+import { SupportedStates } from '../enums/SupportedStates';
 
 export function useAppHook() {
   const [operation, setOperation] = useState<SupportedOperations | null>(null);
-  const [resultFetched, setResultFetched] =
-    useState<IFetchResponse>(defaultFetchedValues);
+  const [resultFetched, setResultFetched] = useState<IFetchResponse | null>(null);
   const [display, setDisplay] = useState<string>('0');
   const [currentInput, setCurrentInput] = useState<string>('0');
   const [prevNumber, setPrevNumber] = useState<number | null>(null);
@@ -28,7 +26,7 @@ export function useAppHook() {
     if (resetOnNextDigit) {
       const next = digit;
       setResetOnNextDigit(false);
-      setResultFetched(defaultFetchedValues);
+      setResultFetched(null);
       setOperation(null);
       setPrevNumber(Number(next));
       setCurrentNumber(null);
@@ -45,7 +43,7 @@ export function useAppHook() {
     if (currentInput.includes('.')) return;
     if (resetOnNextDigit) {
       setResetOnNextDigit(false);
-      setResultFetched(defaultFetchedValues);
+      setResultFetched(null);
       setOperation(null);
       setPrevNumber(null);
       setCurrentNumber(null);
@@ -59,7 +57,7 @@ export function useAppHook() {
 
   const handleClear = () => {
     setOperation(null);
-    setResultFetched(defaultFetchedValues);
+    setResultFetched(null);
     setDisplay('0');
     setCurrentInput('0');
     setPrevNumber(null);
@@ -83,8 +81,8 @@ export function useAppHook() {
       'https://calculadora-zsg3.onrender.com/operations',
       {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({operation, num1: numA, num2: numB}),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ operation, num1: numA, num2: numB }),
       }
     );
 
@@ -95,6 +93,7 @@ export function useAppHook() {
       setCurrentNumber(null);
       setCurrentInput('0');
       setResetOnNextDigit(false);
+      setResultFetched(null);
       return;
     }
 
@@ -102,7 +101,6 @@ export function useAppHook() {
 
     setDisplay(String(data.result));
     setResultFetched(data);
-
     setOperation(null);
     setPrevNumber(null);
     setCurrentNumber(null);

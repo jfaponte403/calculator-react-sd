@@ -12,6 +12,7 @@ export function useAppHook() {
   const [currentInput, setCurrentInput] = useState<string>('0');
   const [prevNumber, setPrevNumber] = useState<number | null>(null);
   const [currentNumber, setCurrentNumber] = useState<number | null>(null);
+  const [resetOnNextDigit, setResetOnNextDigit] = useState(false);
 
   const updateInput = (next: string) => {
     setCurrentInput(next);
@@ -24,12 +25,34 @@ export function useAppHook() {
   };
 
   const handleNumber = (digit: string) => {
+    if (resetOnNextDigit) {
+      const next = digit;
+      setResetOnNextDigit(false);
+      setResultFetched(defaultFetchedValues);
+      setOperation(null);
+      setPrevNumber(Number(next));
+      setCurrentNumber(null);
+      setCurrentInput(next);
+      setDisplay(next);
+      return;
+    }
+
     const next = currentInput === '0' ? digit : currentInput + digit;
     updateInput(next);
   };
 
   const handleDecimal = () => {
     if (currentInput.includes('.')) return;
+    if (resetOnNextDigit) {
+      setResetOnNextDigit(false);
+      setResultFetched(defaultFetchedValues);
+      setOperation(null);
+      setPrevNumber(null);
+      setCurrentNumber(null);
+      setCurrentInput('0.');
+      setDisplay('0.');
+      return;
+    }
     const next = currentInput + '.';
     updateInput(next);
   };
@@ -41,6 +64,7 @@ export function useAppHook() {
     setCurrentInput('0');
     setPrevNumber(null);
     setCurrentNumber(null);
+    setResetOnNextDigit(false);
   };
 
   const selectOperationHandler = (op: SupportedOperations) => {
@@ -49,6 +73,7 @@ export function useAppHook() {
     }
     setOperation(op);
     setCurrentInput('0');
+    setResetOnNextDigit(false);
   };
 
   const handleFetch = async (numA: number, numB: number) => {
@@ -58,9 +83,7 @@ export function useAppHook() {
       'https://calculadora-zsg3.onrender.com/operations',
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({operation, num1: numA, num2: numB}),
       }
     );
@@ -71,6 +94,7 @@ export function useAppHook() {
       setPrevNumber(null);
       setCurrentNumber(null);
       setCurrentInput('0');
+      setResetOnNextDigit(false);
       return;
     }
 
@@ -83,6 +107,7 @@ export function useAppHook() {
     setPrevNumber(null);
     setCurrentNumber(null);
     setCurrentInput(String(data.result));
+    setResetOnNextDigit(true);
   };
 
   const handleEquals = () => {
